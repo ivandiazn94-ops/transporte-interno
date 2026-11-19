@@ -3,59 +3,74 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>TRANSPORTE INTERNO SYNTEGON TELSTAR</title>
+  <title>TRANSPORTE INTERNO - TELSTAR</title>
   <style>
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
       background: #eef3f8;
       color: #1b2430;
     }
     .app {
       max-width: 900px;
       margin: 0 auto;
-      padding: 12px;
+      padding: 8px 12px 20px 12px;
     }
     .header {
-      background: #0b3b78;
-      color: #fff;
-      border-radius: 18px;
-      padding: 20px;
-      text-align: center;
+      background: #ffffff;
+      color: #111111;
+      border-bottom: 3px solid #0b3b78;
+      border-radius: 14px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
-    .logo {
-      font-size: 32px;
-      font-weight: 900;
+    .brand-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .telstar-svg {
+      height: 36px;
+      width: auto;
+      display: block;
     }
     .sub {
-      margin-top: 6px;
-      font-size: 14px;
+      margin-top: 4px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      color: #0b3b78;
+      text-transform: uppercase;
     }
     .counter {
-      margin-top: 12px;
-      background: #fff;
-      color: #0b3b78;
-      display: inline-block;
-      padding: 8px 16px;
-      border-radius: 20px;
+      background: #0b3b78;
+      color: #ffffff;
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 13px;
       font-weight: 700;
+      white-space: nowrap;
     }
     .card {
       background: #fff;
-      border-radius: 18px;
-      padding: 16px;
-      margin-top: 16px;
+      border-radius: 16px;
+      padding: 14px;
+      margin-top: 12px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
     .bigbtn {
       width: 100%;
-      padding: 20px;
+      padding: 18px;
       border: none;
-      border-radius: 16px;
+      border-radius: 14px;
       background: #0078d4;
       color: #fff;
-      font-size: 22px;
+      font-size: 21px;
       font-weight: 800;
       cursor: pointer;
     }
@@ -178,38 +193,104 @@
       background: #f4f7fb;
       border: 2px solid #d5e0ec;
       border-radius: 14px;
-      padding: 16px;
+      padding: 15px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 800;
       color: #0b3b78;
       cursor: pointer;
     }
     .accordion-content {
       display: none;
-      margin-top: 14px;
+      margin-top: 12px;
     }
     .accordion-content.open {
+      display: block;
+    }
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f4f7fb;
+      border: 1px solid #d5e0ec;
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+    }
+    .filter-bar label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0b3b78;
+      white-space: nowrap;
+    }
+    .filter-select {
+      flex: 1;
+      padding: 9px 10px;
+      border-radius: 8px;
+      border: 1px solid #b8c7d9;
+      background: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1b2430;
+    }
+    .day-group {
+      border: 1px solid #d5e0ec;
+      border-radius: 14px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .day-toggle {
+      width: 100%;
+      background: #eaf1f8;
+      border: none;
+      padding: 13px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 15px;
+      font-weight: 800;
+      color: #0b3b78;
+      cursor: pointer;
+      text-align: left;
+    }
+    .day-badge {
+      background: #0b3b78;
+      color: #fff;
+      border-radius: 12px;
+      padding: 2px 9px;
+      font-size: 12px;
+      margin-left: 6px;
+    }
+    .day-content {
+      display: none;
+      padding: 12px;
+      background: #ffffff;
+    }
+    .day-content.open {
       display: block;
     }
     .item {
       background: #f9fbfe;
       border: 1px solid #e2e8f0;
-      border-radius: 14px;
-      padding: 14px;
-      margin-bottom: 12px;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+    .item:last-child {
+      margin-bottom: 0;
     }
     .photos-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 10px;
       margin-top: 10px;
     }
     .photo-card img {
       width: 100%;
-      max-height: 320px;
+      max-height: 300px;
       object-fit: cover;
       border-radius: 10px;
       background: #111;
@@ -229,7 +310,7 @@
     .delete {
       width: 100%;
       margin-top: 10px;
-      padding: 12px;
+      padding: 11px;
       border: none;
       border-radius: 10px;
       background: #c50f1f;
@@ -242,9 +323,15 @@
 <body>
   <div class="app">
     <div class="header">
-      <div class="logo">SYNTEGON</div>
-      <div class="sub">TRANSPORTE INTERNO TELSTAR · v2.5</div>
-      <div id="contador" class="counter">Registros hoy: 0</div>
+      <div class="brand-block">
+        <svg class="telstar-svg" viewBox="0 0 360 88" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Telstar - A Syntegon Company">
+          <text x="0" y="54" fill="#000000" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="60" letter-spacing="-1.5">Telstar</text>
+          <rect x="205" y="42" width="12" height="12" fill="none" stroke="#000000" stroke-width="3.5"/>
+          <text x="36" y="80" fill="#000000" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="14.5" letter-spacing="0.6">A SYNTEGON COMPANY</text>
+        </svg>
+        <div class="sub">Transporte interno · v2.6</div>
+      </div>
+      <div id="contador" class="counter">Hoy: 0</div>
     </div>
 
     <div class="card">
@@ -295,6 +382,12 @@
         <span id="flechaHistorial">▼</span>
       </button>
       <div id="historialPanel" class="accordion-content">
+        <div class="filter-bar">
+          <label for="filtroDia">📅 Filtrar día:</label>
+          <select id="filtroDia" class="filter-select" onchange="cambiarFiltroDia()">
+            <option value="TODOS">Todos los días</option>
+          </select>
+        </div>
         <div id="historial"></div>
       </div>
     </div>
@@ -308,6 +401,8 @@
     var db = null;
     var stream = null;
     var historialAbierto = false;
+    var diasAbiertos = {};
+    var diaSeleccionado = 'TODOS';
     var fotosBorrador = [];
     var firmaBorrador = null;
     var dibujando = false;
@@ -496,6 +591,20 @@
       document.getElementById('flechaHistorial').innerHTML = historialAbierto ? '▲' : '▼';
     }
 
+    function cambiarFiltroDia() {
+      var sel = document.getElementById('filtroDia');
+      diaSeleccionado = sel.value;
+      if (diaSeleccionado !== 'TODOS') {
+        diasAbiertos[diaSeleccionado] = true;
+      }
+      cargar();
+    }
+
+    function toggleDia(fecha) {
+      diasAbiertos[fecha] = !diasAbiertos[fecha];
+      cargar();
+    }
+
     function iniciarCamara() {
       var v = document.getElementById('video');
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -598,9 +707,10 @@
         return;
       }
       var ahora = new Date();
+      var fechaHoy = ahora.toLocaleDateString('es-ES');
       var reg = {
         nombre: nombre,
-        fecha: ahora.toLocaleDateString('es-ES'),
+        fecha: fechaHoy,
         hora: ahora.toLocaleTimeString('es-ES'),
         imagenes: fotosBorrador.slice(),
         firma: firmaBorrador || null
@@ -610,6 +720,7 @@
           alert('No se pudo guardar el registro.');
           return;
         }
+        diasAbiertos[fechaHoy] = true;
         inp.value = '';
         fotosBorrador = [];
         firmaBorrador = null;
@@ -627,16 +738,70 @@
       borrarEnBD(id, function () { cargar(); });
     }
 
+    function escaparHTML(txt) {
+      var d = document.createElement('div');
+      d.textContent = txt || '';
+      return d.innerHTML;
+    }
+
+    function crearTarjetaRegistro(r) {
+      var fotos = r.imagenes ? r.imagenes : (r.imagen ? [r.imagen] : []);
+      var fotosHtml = '';
+      for (var f = 0; f < fotos.length; f++) {
+        fotosHtml += '<div class="photo-card"><img src="' + fotos[f] + '"><a class="download-sm" href="' + fotos[f] + '" download="registro_' + r.id + '_' + (f + 1) + '.jpg">⬇ Foto ' + (f + 1) + '</a></div>';
+      }
+      var firmaHtml = r.firma ? '<div style="margin-top:10px;"><b>✍️ Firma:</b><br><img src="' + r.firma + '" style="max-width:100%; max-height:120px; background:#fff; margin-top:6px; border:1px solid #e2e8f0; border-radius:8px;"></div>' : '';
+      var div = document.createElement('div');
+      div.className = 'item';
+      div.innerHTML = '<div><b>🕒 ' + escaparHTML(r.hora) + '</b> &nbsp;|&nbsp; <b>🏭 ' + escaparHTML(r.nombre) + '</b></div>' +
+        '<div class="photos-grid">' + fotosHtml + '</div>' +
+        firmaHtml +
+        '<button type="button" class="delete">🗑 Borrar</button>';
+      div.querySelector('button.delete').onclick = function () { borrarRegistro(r.id); };
+      return div;
+    }
+
     function cargar() {
       obtenerRegistros(function (datos) {
         var h = document.getElementById('historial');
         var hoy = new Date().toLocaleDateString('es-ES');
         var hoyCount = 0;
-        for (var k = 0; k < datos.length; k++) {
-          if (datos[k].fecha === hoy) hoyCount++;
+        var gruposPorDia = {};
+        var ordenDias = [];
+
+        var rev = datos.slice().reverse();
+        for (var i = 0; i < rev.length; i++) {
+          var item = rev[i];
+          var fecha = item.fecha || 'Sin fecha';
+          if (fecha === hoy) hoyCount++;
+          if (!gruposPorDia[fecha]) {
+            gruposPorDia[fecha] = [];
+            ordenDias.push(fecha);
+          }
+          gruposPorDia[fecha].push(item);
         }
-        document.getElementById('contador').innerHTML = 'Registros hoy: ' + hoyCount;
+
+        if (diasAbiertos[hoy] === undefined) {
+          diasAbiertos[hoy] = true;
+        }
+
+        document.getElementById('contador').innerHTML = 'Hoy: ' + hoyCount;
         document.getElementById('totalHistorial').innerHTML = datos.length;
+
+        var sel = document.getElementById('filtroDia');
+        var valorPrevio = diaSeleccionado;
+        sel.innerHTML = '<option value="TODOS">Todos los días (' + ordenDias.length + ')</option>';
+        for (var d = 0; d < ordenDias.length; d++) {
+          var fDia = ordenDias[d];
+          var opt = document.createElement('option');
+          opt.value = fDia;
+          opt.textContent = (fDia === hoy ? 'Hoy · ' + fDia : fDia) + ' (' + gruposPorDia[fDia].length + ')';
+          sel.appendChild(opt);
+        }
+        if (valorPrevio !== 'TODOS' && !gruposPorDia[valorPrevio]) {
+          diaSeleccionado = 'TODOS';
+        }
+        sel.value = diaSeleccionado;
 
         if (!datos.length) {
           h.innerHTML = '<div style="text-align:center; padding:16px; color:#5c6b7c;">No hay registros guardados.</div>';
@@ -644,24 +809,36 @@
         }
 
         h.innerHTML = '';
-        var rev = datos.slice().reverse();
-        for (var i = 0; i < rev.length; i++) {
-          (function (r) {
-            var fotos = r.imagenes ? r.imagenes : (r.imagen ? [r.imagen] : []);
-            var fotosHtml = '';
-            for (var f = 0; f < fotos.length; f++) {
-              fotosHtml += '<div class="photo-card"><img src="' + fotos[f] + '"><a class="download-sm" href="' + fotos[f] + '" download="registro_' + r.id + '_' + (f + 1) + '.jpg">⬇ Foto ' + (f + 1) + '</a></div>';
+        for (var j = 0; j < ordenDias.length; j++) {
+          (function (fechaDia) {
+            if (diaSeleccionado !== 'TODOS' && diaSeleccionado !== fechaDia) {
+              return;
             }
-            var firmaHtml = r.firma ? '<div style="margin-top:10px;"><b>✍️ Firma:</b><br><img src="' + r.firma + '" style="max-width:100%; max-height:120px; background:#fff; margin-top:6px;"></div>' : '';
-            var div = document.createElement('div');
-            div.className = 'item';
-            div.innerHTML = '<div><b>📅 ' + r.fecha + '</b> | <b>🕒 ' + r.hora + '</b><br><b>🏭 ' + r.nombre + '</b></div>' +
-              '<div class="photos-grid">' + fotosHtml + '</div>' +
-              firmaHtml +
-              '<button type="button" class="delete">🗑 Borrar</button>';
-            div.querySelector('button.delete').onclick = function () { borrarRegistro(r.id); };
-            h.appendChild(div);
-          })(rev[i]);
+            var listaDia = gruposPorDia[fechaDia];
+            var abierto = !!diasAbiertos[fechaDia];
+
+            var grupo = document.createElement('div');
+            grupo.className = 'day-group';
+
+            var btnDia = document.createElement('button');
+            btnDia.type = 'button';
+            btnDia.className = 'day-toggle';
+            var etiquetaDia = (fechaDia === hoy) ? '📅 Hoy (' + fechaDia + ')' : '📅 ' + fechaDia;
+            btnDia.innerHTML = '<span>' + etiquetaDia + '<span class="day-badge">' + listaDia.length + '</span></span>' +
+              '<span>' + (abierto ? '▲' : '▼') + '</span>';
+            btnDia.onclick = function () { toggleDia(fechaDia); };
+
+            var contDia = document.createElement('div');
+            contDia.className = abierto ? 'day-content open' : 'day-content';
+
+            for (var rIdx = 0; rIdx < listaDia.length; rIdx++) {
+              contDia.appendChild(crearTarjetaRegistro(listaDia[rIdx]));
+            }
+
+            grupo.appendChild(btnDia);
+            grupo.appendChild(contDia);
+            h.appendChild(grupo);
+          })(ordenDias[j]);
         }
       });
     }
