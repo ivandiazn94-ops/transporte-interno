@@ -8,13 +8,13 @@
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: 'Segoe UI', Arial, sans-serif;
+      font-family: Arial, sans-serif;
       background: #eef3f8;
       color: #1b2430;
     }
     .app {
       max-width: 900px;
-      margin: auto;
+      margin: 0 auto;
       padding: 12px;
     }
     .header {
@@ -23,17 +23,14 @@
       border-radius: 18px;
       padding: 20px;
       text-align: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
     }
     .logo {
-      font-size: 34px;
+      font-size: 32px;
       font-weight: 900;
-      letter-spacing: 1px;
     }
     .sub {
-      opacity: .92;
-      margin-top: 4px;
-      font-weight: 600;
+      margin-top: 6px;
+      font-size: 14px;
     }
     .counter {
       margin-top: 12px;
@@ -49,7 +46,18 @@
       border-radius: 18px;
       padding: 16px;
       margin-top: 16px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    .bigbtn {
+      width: 100%;
+      padding: 20px;
+      border: none;
+      border-radius: 16px;
+      background: #0078d4;
+      color: #fff;
+      font-size: 22px;
+      font-weight: 800;
+      cursor: pointer;
     }
     .field-label {
       display: block;
@@ -60,122 +68,69 @@
     }
     .input-nombre {
       width: 100%;
-      padding: 14px 16px;
-      font-size: 17px;
+      padding: 14px;
+      font-size: 16px;
       border: 2px solid #cbd6e2;
       border-radius: 12px;
-      outline: none;
-      transition: border-color .2s;
-    }
-    .input-nombre:focus {
-      border-color: #0078d4;
-    }
-    .bigbtn {
-      width: 100%;
-      padding: 22px;
-      border: none;
-      border-radius: 18px;
-      background: #0078d4;
-      color: #fff;
-      font-size: 24px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-    .bigbtn:active {
-      transform: scale(0.99);
     }
     .action-trigger {
       width: 100%;
-      padding: 16px;
+      padding: 15px;
       margin-top: 12px;
       border: 2px solid #0078d4;
       border-radius: 12px;
       background: #eaf4fc;
       color: #005a9e;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 800;
       cursor: pointer;
-    }
-    .action-trigger:hover {
-      background: #d8ebfa;
     }
     .sign-trigger {
       border-color: #0b3b78;
       background: #edf2f9;
       color: #0b3b78;
     }
-    .sign-trigger:hover {
-      background: #dce6f5;
-    }
     .signature-box {
       margin-top: 14px;
-      padding: 14px;
+      padding: 12px;
       border: 2px solid #0b3b78;
-      border-radius: 16px;
+      border-radius: 14px;
       background: #f8fbff;
-    }
-    .signature-header {
-      font-weight: 800;
-      color: #0b3b78;
-      margin-bottom: 10px;
-      font-size: 16px;
     }
     #canvasFirma {
       width: 100%;
-      height: 220px;
+      height: 200px;
       display: block;
       background: #fff;
       border: 2px dashed #9fb3c8;
-      border-radius: 12px;
+      border-radius: 10px;
       touch-action: none;
-      cursor: crosshair;
     }
     .sign-preview {
       margin-top: 12px;
-      padding: 10px 12px;
+      padding: 10px;
       border: 1px solid #d5e0ec;
       border-radius: 12px;
       background: #f9fbfe;
     }
-    .sign-preview-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-      font-weight: 700;
-      font-size: 14px;
-      color: #0b3b78;
-    }
     .sign-preview img {
       max-width: 100%;
-      max-height: 130px;
+      max-height: 120px;
       display: block;
+      margin-top: 8px;
       background: #fff;
-      border-radius: 8px;
-      border: 1px solid #e2e8f0;
-    }
-    .btn-mini-clear {
-      background: #e2e8f0;
-      color: #1b2430;
-      border: none;
-      border-radius: 8px;
-      padding: 6px 10px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
     }
     video {
       width: 100%;
-      max-height: 460px;
-      object-fit: cover;
+      max-height: 420px;
       background: #111;
-      border-radius: 16px;
+      border-radius: 14px;
       margin-top: 12px;
       display: block;
     }
     .btn {
       width: 100%;
-      padding: 16px;
+      padding: 15px;
       margin-top: 10px;
       border: none;
       border-radius: 12px;
@@ -188,30 +143,21 @@
     .save { background: #107c10; }
     .clear { background: #5c6b7c; }
     .close { background: #d83b01; }
-    .draft-photos {
-      margin-top: 14px;
-    }
-    .draft-title {
-      font-weight: 700;
-      color: #0b3b78;
-      margin-bottom: 8px;
-      font-size: 15px;
-    }
     .thumbs {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
       gap: 10px;
+      margin-top: 10px;
     }
     .thumb-box {
       position: relative;
       border-radius: 10px;
       overflow: hidden;
-      border: 1px solid #d5e0ec;
       background: #111;
     }
     .thumb-box img {
       width: 100%;
-      height: 100px;
+      height: 95px;
       object-fit: cover;
       display: block;
     }
@@ -219,12 +165,11 @@
       position: absolute;
       top: 4px;
       right: 4px;
-      background: rgba(197, 15, 31, 0.92);
+      background: #c50f1f;
       color: #fff;
       border: none;
       border-radius: 6px;
-      padding: 2px 7px;
-      font-size: 12px;
+      padding: 3px 7px;
       font-weight: 700;
       cursor: pointer;
     }
@@ -233,30 +178,14 @@
       background: #f4f7fb;
       border: 2px solid #d5e0ec;
       border-radius: 14px;
-      padding: 16px 18px;
+      padding: 16px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
       font-size: 18px;
       font-weight: 800;
       color: #0b3b78;
       cursor: pointer;
-    }
-    .accordion-toggle:hover {
-      background: #eaf1f8;
-    }
-    .accordion-badge {
-      background: #0b3b78;
-      color: #fff;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 13px;
-      margin-left: 8px;
-      vertical-align: middle;
-    }
-    .accordion-arrow {
-      font-size: 16px;
-      transition: transform .2s ease;
     }
     .accordion-content {
       display: none;
@@ -265,13 +194,480 @@
     .accordion-content.open {
       display: block;
     }
-    .grid {
-      display: grid;
-      gap: 14px;
-    }
     .item {
       background: #f9fbfe;
       border: 1px solid #e2e8f0;
-      border-radius: 16px;
+      border-radius: 14px;
       padding: 14px;
-      box
+      margin-bottom: 12px;
+    }
+    .photos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .photo-card img {
+      width: 100%;
+      max-height: 320px;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #111;
+    }
+    .download-sm {
+      display: block;
+      margin-top: 6px;
+      text-align: center;
+      padding: 8px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #fff;
+      background: #0078d4;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .delete {
+      width: 100%;
+      margin-top: 10px;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #c50f1f;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div class="logo">SYNTEGON</div>
+      <div class="sub">TRANSPORTE INTERNO TELSTAR · v2.5</div>
+      <div id="contador" class="counter">Registros hoy: 0</div>
+    </div>
+
+    <div class="card">
+      <button type="button" class="bigbtn" onclick="abrirFormulario()">📷 NUEVO REGISTRO</button>
+
+      <div id="formularioRegistro" style="display:none;">
+        <div id="menuRegistro">
+          <label class="field-label" for="nombre">Proveedor/cliente</label>
+          <input type="text" id="nombre" class="input-nombre" placeholder="Escribe el proveedor o cliente...">
+
+          <button type="button" id="btnAbrirFirma" class="action-trigger sign-trigger" onclick="abrirFirma()">✍️ FIRMAR</button>
+
+          <div id="previewFirmaBorrador" class="sign-preview" style="display:none;">
+            <b>✅ Firma guardada</b>
+            <button type="button" onclick="quitarFirmaBorrador()" style="margin-left:8px;">Quitar</button>
+            <img id="imgFirmaBorrador" alt="Firma">
+          </div>
+
+          <button type="button" id="btnAbrirCamara" class="action-trigger" onclick="iniciarCamara()">📸 ABRIR CÁMARA</button>
+
+          <div id="camara" style="display:none;">
+            <video id="video" autoplay playsinline muted></video>
+            <button type="button" class="btn snap" onclick="sacarFoto()">📷 SACAR FOTO</button>
+            <button type="button" class="btn close" onclick="cerrarCamara()">❌ CERRAR CÁMARA</button>
+          </div>
+
+          <div id="seccionBorrador" style="display:none; margin-top:14px;">
+            <div id="tituloBorrador" style="font-weight:700; color:#0b3b78;">Fotos capturadas (0):</div>
+            <div id="miniaturasBorrador" class="thumbs"></div>
+          </div>
+
+          <button type="button" class="btn save" onclick="guardarRegistro()">✅ GUARDAR REGISTRO</button>
+        </div>
+
+        <div id="panelFirma" class="signature-box" style="display:none;">
+          <div style="font-weight:800; color:#0b3b78; margin-bottom:8px;">✍️ Recuadro de firma</div>
+          <canvas id="canvasFirma"></canvas>
+          <button type="button" class="btn clear" onclick="limpiarFirma()">🧹 LIMPIAR FIRMA</button>
+          <button type="button" class="btn save" onclick="guardarFirma()">✅ GUARDAR FIRMA</button>
+          <button type="button" class="btn close" onclick="cancelarFirma()">❌ CANCELAR</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <button type="button" id="btnHistorial" class="accordion-toggle" onclick="toggleHistorial()">
+        <span>📋 Historial de registros (<span id="totalHistorial">0</span>)</span>
+        <span id="flechaHistorial">▼</span>
+      </button>
+      <div id="historialPanel" class="accordion-content">
+        <div id="historial"></div>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="canvas" style="display:none;"></canvas>
+
+  <script>
+    var DB_NAME = 'TransporteInternoDB';
+    var STORE_NAME = 'registros';
+    var db = null;
+    var stream = null;
+    var historialAbierto = false;
+    var fotosBorrador = [];
+    var firmaBorrador = null;
+    var dibujando = false;
+    var tieneTrazo = false;
+    var ultimoX = 0;
+    var ultimoY = 0;
+
+    function abrirBD(cb) {
+      if (db) return cb(null, db);
+      if (!window.indexedDB) return cb(new Error('No IndexedDB'), null);
+      var req = indexedDB.open(DB_NAME, 1);
+      req.onupgradeneeded = function (e) {
+        var d = e.target.result;
+        if (!d.objectStoreNames.contains(STORE_NAME)) {
+          d.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+        }
+      };
+      req.onsuccess = function (e) {
+        db = e.target.result;
+        cb(null, db);
+      };
+      req.onerror = function (e) {
+        cb(e.target.error || new Error('Error DB'), null);
+      };
+    }
+
+    function obtenerRegistros(cb) {
+      abrirBD(function (err, d) {
+        if (err || !d) return cb([]);
+        var tx = d.transaction(STORE_NAME, 'readonly');
+        var st = tx.objectStore(STORE_NAME);
+        var req = st.getAll();
+        req.onsuccess = function () { cb(req.result || []); };
+        req.onerror = function () { cb([]); };
+      });
+    }
+
+    function guardarEnBD(reg, cb) {
+      abrirBD(function (err, d) {
+        if (err || !d) return cb(err || new Error('Sin DB'));
+        var tx = d.transaction(STORE_NAME, 'readwrite');
+        var st = tx.objectStore(STORE_NAME);
+        var req = st.add(reg);
+        req.onsuccess = function () { cb(null); };
+        req.onerror = function (e) { cb(e.target.error || new Error('Error guardar')); };
+      });
+    }
+
+    function borrarEnBD(id, cb) {
+      abrirBD(function (err, d) {
+        if (err || !d) return cb();
+        var tx = d.transaction(STORE_NAME, 'readwrite');
+        var st = tx.objectStore(STORE_NAME);
+        var req = st.delete(id);
+        req.onsuccess = function () { cb(); };
+        req.onerror = function () { cb(); };
+      });
+    }
+
+    function abrirFormulario() {
+      cerrarCamara();
+      fotosBorrador = [];
+      firmaBorrador = null;
+      renderBorrador();
+      renderFirma();
+      document.getElementById('panelFirma').style.display = 'none';
+      document.getElementById('menuRegistro').style.display = 'block';
+      document.getElementById('formularioRegistro').style.display = 'block';
+      var inp = document.getElementById('nombre');
+      inp.value = '';
+      inp.focus();
+    }
+
+    function prepFirma() {
+      var c = document.getElementById('canvasFirma');
+      var ctx = c.getContext('2d');
+      var r = c.getBoundingClientRect();
+      c.width = Math.max(300, Math.round(r.width || 500));
+      c.height = Math.max(180, Math.round(r.height || 200));
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, c.width, c.height);
+      ctx.strokeStyle = '#0b2545';
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      dibujando = false;
+      tieneTrazo = false;
+    }
+
+    function abrirFirma() {
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      cerrarCamara();
+      document.getElementById('menuRegistro').style.display = 'none';
+      document.getElementById('panelFirma').style.display = 'block';
+      setTimeout(prepFirma, 30);
+    }
+
+    function limpiarFirma() {
+      prepFirma();
+    }
+
+    function cancelarFirma() {
+      dibujando = false;
+      document.getElementById('panelFirma').style.display = 'none';
+      document.getElementById('menuRegistro').style.display = 'block';
+    }
+
+    function guardarFirma() {
+      if (!tieneTrazo) {
+        alert('Dibuja una firma antes de guardar.');
+        return;
+      }
+      firmaBorrador = document.getElementById('canvasFirma').toDataURL('image/png');
+      renderFirma();
+      document.getElementById('panelFirma').style.display = 'none';
+      document.getElementById('menuRegistro').style.display = 'block';
+    }
+
+    function quitarFirmaBorrador() {
+      firmaBorrador = null;
+      renderFirma();
+    }
+
+    function renderFirma() {
+      var box = document.getElementById('previewFirmaBorrador');
+      var img = document.getElementById('imgFirmaBorrador');
+      var btn = document.getElementById('btnAbrirFirma');
+      if (!firmaBorrador) {
+        box.style.display = 'none';
+        img.src = '';
+        btn.innerHTML = '✍️ FIRMAR';
+      } else {
+        img.src = firmaBorrador;
+        box.style.display = 'block';
+        btn.innerHTML = '✍️ VOLVER A FIRMAR';
+      }
+    }
+
+    function posFirma(cx, cy) {
+      var c = document.getElementById('canvasFirma');
+      var r = c.getBoundingClientRect();
+      return {
+        x: ((cx - r.left) / (r.width || 1)) * c.width,
+        y: ((cy - r.top) / (r.height || 1)) * c.height
+      };
+    }
+
+    function initFirmaEventos() {
+      var c = document.getElementById('canvasFirma');
+      function down(x, y) {
+        var ctx = c.getContext('2d');
+        var p = posFirma(x, y);
+        dibujando = true;
+        tieneTrazo = true;
+        ultimoX = p.x;
+        ultimoY = p.y;
+        ctx.beginPath();
+        ctx.moveTo(ultimoX, ultimoY);
+      }
+      function move(x, y) {
+        if (!dibujando) return;
+        var ctx = c.getContext('2d');
+        var p = posFirma(x, y);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+        ultimoX = p.x;
+        ultimoY = p.y;
+      }
+      function up() { dibujando = false; }
+
+      if (window.PointerEvent) {
+        c.addEventListener('pointerdown', function (e) { e.preventDefault(); down(e.clientX, e.clientY); });
+        c.addEventListener('pointermove', function (e) { if (dibujando) { e.preventDefault(); move(e.clientX, e.clientY); } });
+        c.addEventListener('pointerup', up);
+        c.addEventListener('pointercancel', up);
+      } else {
+        c.addEventListener('touchstart', function (e) { e.preventDefault(); if (e.touches[0]) down(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
+        c.addEventListener('touchmove', function (e) { if (dibujando && e.touches[0]) { e.preventDefault(); move(e.touches[0].clientX, e.touches[0].clientY); } }, { passive: false });
+        c.addEventListener('touchend', up);
+      }
+    }
+
+    function toggleHistorial() {
+      historialAbierto = !historialAbierto;
+      document.getElementById('historialPanel').className = historialAbierto ? 'accordion-content open' : 'accordion-content';
+      document.getElementById('flechaHistorial').innerHTML = historialAbierto ? '▲' : '▼';
+    }
+
+    function iniciarCamara() {
+      var v = document.getElementById('video');
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert('No se puede acceder a la cámara en este navegador.');
+        return;
+      }
+      cerrarCamara();
+      navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false
+      }).then(function (s) {
+        stream = s;
+        v.srcObject = s;
+        v.play();
+        document.getElementById('camara').style.display = 'block';
+        document.getElementById('btnAbrirCamara').style.display = 'none';
+      }).catch(function () {
+        alert('No se pudo abrir la cámara. Revisa permisos.');
+      });
+    }
+
+    function cerrarCamara() {
+      var v = document.getElementById('video');
+      if (stream) {
+        stream.getTracks().forEach(function (t) { t.stop(); });
+        stream = null;
+      }
+      if (v) v.srcObject = null;
+      document.getElementById('camara').style.display = 'none';
+      document.getElementById('btnAbrirCamara').style.display = 'block';
+    }
+
+    function sacarFoto() {
+      var v = document.getElementById('video');
+      if (!stream || !v || v.readyState < 2 || !v.videoWidth) {
+        alert('Espera un momento a que cargue la imagen de la cámara.');
+        return;
+      }
+      var maxW = 1280;
+      var w = v.videoWidth;
+      var h = v.videoHeight;
+      if (w > maxW) {
+        h = Math.round(h * (maxW / w));
+        w = maxW;
+      }
+      var c = document.getElementById('canvas');
+      c.width = w;
+      c.height = h;
+      var ctx = c.getContext('2d');
+      ctx.drawImage(v, 0, 0, w, h);
+      fotosBorrador.push(c.toDataURL('image/jpeg', 0.72));
+      renderBorrador();
+    }
+
+    function quitarFoto(i) {
+      fotosBorrador.splice(i, 1);
+      renderBorrador();
+    }
+
+    function renderBorrador() {
+      var sec = document.getElementById('seccionBorrador');
+      var tit = document.getElementById('tituloBorrador');
+      var box = document.getElementById('miniaturasBorrador');
+      if (!fotosBorrador.length) {
+        sec.style.display = 'none';
+        box.innerHTML = '';
+        return;
+      }
+      sec.style.display = 'block';
+      tit.innerHTML = 'Fotos capturadas (' + fotosBorrador.length + '):';
+      box.innerHTML = '';
+      for (var i = 0; i < fotosBorrador.length; i++) {
+        (function (idx) {
+          var d = document.createElement('div');
+          d.className = 'thumb-box';
+          var im = document.createElement('img');
+          im.src = fotosBorrador[idx];
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'thumb-remove';
+          b.innerHTML = '✕';
+          b.onclick = function () { quitarFoto(idx); };
+          d.appendChild(im);
+          d.appendChild(b);
+          box.appendChild(d);
+        })(i);
+      }
+    }
+
+    function guardarRegistro() {
+      var inp = document.getElementById('nombre');
+      var nombre = inp.value.replace(/^\s+|\s+$/g, '');
+      if (!nombre) {
+        alert('Escribe el proveedor o cliente antes de guardar.');
+        inp.focus();
+        return;
+      }
+      if (!fotosBorrador.length) {
+        alert('Haz al menos una foto antes de guardar.');
+        return;
+      }
+      var ahora = new Date();
+      var reg = {
+        nombre: nombre,
+        fecha: ahora.toLocaleDateString('es-ES'),
+        hora: ahora.toLocaleTimeString('es-ES'),
+        imagenes: fotosBorrador.slice(),
+        firma: firmaBorrador || null
+      };
+      guardarEnBD(reg, function (err) {
+        if (err) {
+          alert('No se pudo guardar el registro.');
+          return;
+        }
+        inp.value = '';
+        fotosBorrador = [];
+        firmaBorrador = null;
+        renderBorrador();
+        renderFirma();
+        cerrarCamara();
+        document.getElementById('formularioRegistro').style.display = 'none';
+        cargar();
+        alert('Registro guardado.');
+      });
+    }
+
+    function borrarRegistro(id) {
+      if (!confirm('¿Borrar este registro?')) return;
+      borrarEnBD(id, function () { cargar(); });
+    }
+
+    function cargar() {
+      obtenerRegistros(function (datos) {
+        var h = document.getElementById('historial');
+        var hoy = new Date().toLocaleDateString('es-ES');
+        var hoyCount = 0;
+        for (var k = 0; k < datos.length; k++) {
+          if (datos[k].fecha === hoy) hoyCount++;
+        }
+        document.getElementById('contador').innerHTML = 'Registros hoy: ' + hoyCount;
+        document.getElementById('totalHistorial').innerHTML = datos.length;
+
+        if (!datos.length) {
+          h.innerHTML = '<div style="text-align:center; padding:16px; color:#5c6b7c;">No hay registros guardados.</div>';
+          return;
+        }
+
+        h.innerHTML = '';
+        var rev = datos.slice().reverse();
+        for (var i = 0; i < rev.length; i++) {
+          (function (r) {
+            var fotos = r.imagenes ? r.imagenes : (r.imagen ? [r.imagen] : []);
+            var fotosHtml = '';
+            for (var f = 0; f < fotos.length; f++) {
+              fotosHtml += '<div class="photo-card"><img src="' + fotos[f] + '"><a class="download-sm" href="' + fotos[f] + '" download="registro_' + r.id + '_' + (f + 1) + '.jpg">⬇ Foto ' + (f + 1) + '</a></div>';
+            }
+            var firmaHtml = r.firma ? '<div style="margin-top:10px;"><b>✍️ Firma:</b><br><img src="' + r.firma + '" style="max-width:100%; max-height:120px; background:#fff; margin-top:6px;"></div>' : '';
+            var div = document.createElement('div');
+            div.className = 'item';
+            div.innerHTML = '<div><b>📅 ' + r.fecha + '</b> | <b>🕒 ' + r.hora + '</b><br><b>🏭 ' + r.nombre + '</b></div>' +
+              '<div class="photos-grid">' + fotosHtml + '</div>' +
+              firmaHtml +
+              '<button type="button" class="delete">🗑 Borrar</button>';
+            div.querySelector('button.delete').onclick = function () { borrarRegistro(r.id); };
+            h.appendChild(div);
+          })(rev[i]);
+        }
+      });
+    }
+
+    initFirmaEventos();
+    cargar();
+  </script>
+</body>
+</html>
