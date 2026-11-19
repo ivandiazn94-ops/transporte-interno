@@ -1,1 +1,375 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"><title>TRANSPORTE INTERNO SYNTEGON TELSTAR</title><style>body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#eef3f8} .app{max-width:900px;margin:auto;padding:12px} .header{background:#0b3b78;color:#fff;border-radius:18px;padding:20px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.15)} .logo{font-size:34px;font-weight:900;letter-spacing:1px} .sub{opacity:.9} .counter{margin-top:10px;background:#fff;color:#0b3b78;display:inline-block;padding:8px 14px;border-radius:20px;font-weight:700} .card{background:#fff;border-radius:18px;padding:16px;margin-top:16px;box-shadow:0 2px 10px rgba(0,0,0,.08)} .bigbtn{width:100%;padding:24px;border:none;border-radius:18px;background:#0078d4;color:#fff;font-size:26px;font-weight:800} video{width:100%;border-radius:16px;margin-top:12px} .btn{width:100%;padding:16px;margin-top:10px;border:none;border-radius:12px;color:#fff;font-weight:700} .save{background:#107c10} .close{background:#d83b01} .grid{display:grid;gap:14px} .item{background:#fff;border-radius:16px;padding:12px;box-shadow:0 2px 10px rgba(0,0,0,.08)} .item img{width:100%;border-radius:12px;margin-top:10px} .actions{display:flex;gap:8px;margin-top:10px} .actions button,.actions a{flex:1;text-align:center;padding:10px;border:none;border-radius:10px;text-decoration:none;color:#fff;font-weight:700} .download{background:#0078d4} .delete{background:#c50f1f}</style></head><body><div class="app"><div class="header"><div class="logo">SYNTEGON</div><div class="sub">TRANSPORTE INTERNO TELSTAR</div><div id="contador" class="counter">Registros hoy: 0</div></div><div class="card"><button class="bigbtn" onclick="iniciarCamara()">📷 NUEVO REGISTRO</button><div id="camara" style="display:none"><video id="video" autoplay playsinline></video><button class="btn save" onclick="guardarFoto()">✅ GUARDAR FOTO</button><button class="btn close" onclick="cerrarCamara()">❌ CERRAR CÁMARA</button></div></div><div class="card"><h2>Historial de registros</h2><div id="historial" class="grid"></div></div></div><canvas id="canvas" style="display:none"></canvas><script>let stream=null;const video=document.getElementById('video');async function iniciarCamara(){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});video.srcObject=stream;document.getElementById('camara').style.display='block';}catch(e){alert('No se pudo abrir la cámara');}}function cerrarCamara(){if(stream){stream.getTracks().forEach(t=>t.stop())}document.getElementById('camara').style.display='none';}function guardarFoto(){const c=document.getElementById('canvas');c.width=video.videoWidth;c.height=video.videoHeight;c.getContext('2d').drawImage(video,0,0);const img=c.toDataURL('image/jpeg',0.9);const d=new Date();const r={fecha:d.toLocaleDateString('es-ES'),hora:d.toLocaleTimeString('es-ES'),imagen:img};const datos=JSON.parse(localStorage.getItem('registrosTransporte')||'[]');datos.push(r);localStorage.setItem('registrosTransporte',JSON.stringify(datos));cargar();alert('Registro guardado');}function borrar(i){if(!confirm('¿Borrar registro?'))return;const datos=JSON.parse(localStorage.getItem('registrosTransporte')||'[]');datos.splice(i,1);localStorage.setItem('registrosTransporte',JSON.stringify(datos));cargar();}function cargar(){const datos=JSON.parse(localStorage.getItem('registrosTransporte')||'[]');const h=document.getElementById('historial');h.innerHTML='';const hoy=new Date().toLocaleDateString('es-ES');document.getElementById('contador').innerText='Registros hoy: '+datos.filter(x=>x.fecha===hoy).length;datos.slice().reverse().forEach((r,idx)=>{const real=datos.length-1-idx;h.innerHTML+=`<div class="item"><b>📅 ${r.fecha}</b><br><b>🕒 ${r.hora}</b><img src="${r.imagen}"><div class="actions"><a class="download" href="${r.imagen}" download="registro_${real}.jpg">⬇ Descargar</a><button class="delete" onclick="borrar(${real})">🗑 Borrar</button></div></div>`});}cargar();</script></body></html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TRANSPORTE INTERNO SYNTEGON TELSTAR</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #eef3f8;
+      color: #1b2430;
+    }
+    .app {
+      max-width: 900px;
+      margin: auto;
+      padding: 12px;
+    }
+    .header {
+      background: #0b3b78;
+      color: #fff;
+      border-radius: 18px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+    }
+    .logo {
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+    .sub {
+      opacity: .92;
+      margin-top: 4px;
+      font-weight: 600;
+    }
+    .counter {
+      margin-top: 12px;
+      background: #fff;
+      color: #0b3b78;
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 700;
+    }
+    .card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 16px;
+      margin-top: 16px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+    }
+    .field-label {
+      display: block;
+      font-weight: 700;
+      margin-top: 14px;
+      margin-bottom: 6px;
+      color: #0b3b78;
+    }
+    .input-nombre {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 17px;
+      border: 2px solid #cbd6e2;
+      border-radius: 12px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .input-nombre:focus {
+      border-color: #0078d4;
+    }
+    .bigbtn {
+      width: 100%;
+      padding: 22px;
+      border: none;
+      border-radius: 18px;
+      background: #0078d4;
+      color: #fff;
+      font-size: 24px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .bigbtn:active {
+      transform: scale(0.99);
+    }
+    video {
+      width: 100%;
+      max-height: 460px;
+      object-fit: cover;
+      background: #111;
+      border-radius: 16px;
+      margin-top: 12px;
+      display: block;
+    }
+    .btn {
+      width: 100%;
+      padding: 16px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .save { background: #107c10; }
+    .close { background: #d83b01; }
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+    .item {
+      background: #f9fbfe;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
+    }
+    .item-meta {
+      line-height: 1.5;
+    }
+    .item-name {
+      margin-top: 6px;
+      font-size: 16px;
+      color: #0b3b78;
+    }
+    .item img {
+      width: 100%;
+      max-height: 420px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-top: 10px;
+      background: #111;
+    }
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .actions button,
+    .actions a {
+      flex: 1;
+      text-align: center;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .download { background: #0078d4; }
+    .delete { background: #c50f1f; }
+    .empty {
+      text-align: center;
+      color: #5c6b7c;
+      padding: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div class="logo">SYNTEGON</div>
+      <div class="sub">TRANSPORTE INTERNO TELSTAR</div>
+      <div id="contador" class="counter">Registros hoy: 0</div>
+    </div>
+
+    <div class="card">
+      <button class="bigbtn" onclick="iniciarCamara()">📷 NUEVO REGISTRO</button>
+
+      <div id="camara" style="display:none;">
+        <label class="field-label" for="nombre">Nombre de la persona</label>
+        <input
+          type="text"
+          id="nombre"
+          class="input-nombre"
+          placeholder="Escribe el nombre..."
+          autocomplete="name"
+        >
+
+        <video id="video" autoplay playsinline muted></video>
+
+        <button class="btn save" onclick="guardarRegistro()">✅ GUARDAR REGISTRO</button>
+        <button class="btn close" onclick="cerrarCamara()">❌ CERRAR CÁMARA</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top:0;">Historial de registros</h2>
+      <div id="historial" class="grid"></div>
+    </div>
+  </div>
+
+  <canvas id="canvas" style="display:none;"></canvas>
+
+  <script>
+    const STORAGE_KEY = 'registrosTransporte';
+    let stream = null;
+    const video = document.getElementById('video');
+
+    function obtenerDatos() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function guardarDatos(datos) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
+    }
+
+    async function iniciarCamara() {
+      try {
+        if (stream) {
+          stream.getTracks().forEach(t => t.stop());
+        }
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: 'environment' },
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          },
+          audio: false
+        });
+        video.srcObject = stream;
+        await video.play();
+        document.getElementById('camara').style.display = 'block';
+        document.getElementById('nombre').focus({ preventScroll: true });
+      } catch (e) {
+        alert('No se pudo abrir la cámara. Revisa los permisos del navegador.');
+      }
+    }
+
+    function cerrarCamara() {
+      if (stream) {
+        stream.getTracks().forEach(t => t.stop());
+        stream = null;
+      }
+      video.srcObject = null;
+      document.getElementById('camara').style.display = 'none';
+    }
+
+    function capturarImagen() {
+      if (!stream || video.readyState < 2 || !video.videoWidth || !video.videoHeight) {
+        return null;
+      }
+
+      const maxAncho = 1280;
+      let ancho = video.videoWidth;
+      let alto = video.videoHeight;
+
+      if (ancho > maxAncho) {
+        const escala = maxAncho / ancho;
+        ancho = maxAncho;
+        alto = Math.round(alto * escala);
+      }
+
+      const canvas = document.getElementById('canvas');
+      canvas.width = ancho;
+      canvas.height = alto;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, ancho, alto);
+
+      // Comprobación rápida por si el fotograma está completamente negro
+      const muestra = ctx.getImageData(0, 0, Math.min(20, ancho), Math.min(20, alto)).data;
+      let sumaBrillo = 0;
+      for (let i = 0; i < muestra.length; i += 4) {
+        sumaBrillo += muestra[i] + muestra[i + 1] + muestra[i + 2];
+      }
+      if (sumaBrillo === 0) {
+        return null;
+      }
+
+      return canvas.toDataURL('image/jpeg', 0.72);
+    }
+
+    function guardarRegistro() {
+      const inputNombre = document.getElementById('nombre');
+      const nombre = inputNombre.value.trim();
+
+      if (!nombre) {
+        alert('Por favor, introduce el nombre antes de guardar.');
+        inputNombre.focus();
+        return;
+      }
+
+      const img = capturarImagen();
+      if (!img) {
+        alert('La cámara aún no tiene imagen lista o ha salido en negro. Espera un segundo y vuelve a intentarlo.');
+        return;
+      }
+
+      const ahora = new Date();
+      const registro = {
+        nombre: nombre,
+        fecha: ahora.toLocaleDateString('es-ES'),
+        hora: ahora.toLocaleTimeString('es-ES'),
+        imagen: img
+      };
+
+      const datos = obtenerDatos();
+      datos.push(registro);
+
+      try {
+        guardarDatos(datos);
+      } catch (e) {
+        alert('Se ha llenado el espacio disponible en el navegador. Borra algún registro antiguo del historial.');
+        return;
+      }
+
+      inputNombre.value = '';
+      cargar();
+      alert('Registro guardado correctamente.');
+    }
+
+    function borrar(indiceReal) {
+      if (!confirm('¿Borrar este registro?')) return;
+      const datos = obtenerDatos();
+      datos.splice(indiceReal, 1);
+      guardarDatos(datos);
+      cargar();
+    }
+
+    function escaparTexto(texto) {
+      const div = document.createElement('div');
+      div.textContent = texto;
+      return div.innerHTML;
+    }
+
+    function cargar() {
+      const datos = obtenerDatos();
+      const h = document.getElementById('historial');
+      h.innerHTML = '';
+
+      const hoy = new Date().toLocaleDateString('es-ES');
+      const registrosHoy = datos.filter(x => x.fecha === hoy).length;
+      document.getElementById('contador').innerText = 'Registros hoy: ' + registrosHoy;
+
+      if (datos.length === 0) {
+        h.innerHTML = '<div class="empty">Aún no hay registros guardados.</div>';
+        return;
+      }
+
+      datos.slice().reverse().forEach((r, idx) => {
+        const real = datos.length - 1 - idx;
+        const nombreSeguro = escaparTexto(r.nombre || 'Sin nombre');
+        const nombreArchivo = (r.nombre || 'registro')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/gi, '_')
+          .replace(/^_|_$/g, '');
+
+        h.innerHTML += `
+          <div class="item">
+            <div class="item-meta">
+              <b>📅 ${escaparTexto(r.fecha)}</b> &nbsp;|&nbsp; <b>🕒 ${escaparTexto(r.hora)}</b>
+              <div class="item-name">👤 <b>${nombreSeguro}</b></div>
+            </div>
+            <img src="${r.imagen}" alt="Foto de ${nombreSeguro}">
+            <div class="actions">
+              <a class="download" href="${r.imagen}" download="transporte_${nombreArchivo || real}_${real}.jpg">⬇ Descargar</a>
+              <button class="delete" onclick="borrar(${real})">🗑 Borrar</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    cargar();
+  </script>
+</body>
+</html>
