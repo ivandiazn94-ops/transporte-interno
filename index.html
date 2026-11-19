@@ -84,10 +84,10 @@
     .bigbtn:active {
       transform: scale(0.99);
     }
-    .cam-trigger {
+    .action-trigger {
       width: 100%;
       padding: 16px;
-      margin-top: 14px;
+      margin-top: 12px;
       border: 2px solid #0078d4;
       border-radius: 12px;
       background: #eaf4fc;
@@ -96,8 +96,73 @@
       font-weight: 800;
       cursor: pointer;
     }
-    .cam-trigger:hover {
+    .action-trigger:hover {
       background: #d8ebfa;
+    }
+    .sign-trigger {
+      border-color: #0b3b78;
+      background: #edf2f9;
+      color: #0b3b78;
+    }
+    .sign-trigger:hover {
+      background: #dce6f5;
+    }
+    .signature-box {
+      margin-top: 14px;
+      padding: 14px;
+      border: 2px solid #0b3b78;
+      border-radius: 16px;
+      background: #f8fbff;
+    }
+    .signature-header {
+      font-weight: 800;
+      color: #0b3b78;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    #canvasFirma {
+      width: 100%;
+      height: 220px;
+      display: block;
+      background: #fff;
+      border: 2px dashed #9fb3c8;
+      border-radius: 12px;
+      touch-action: none;
+      cursor: crosshair;
+    }
+    .sign-preview {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border: 1px solid #d5e0ec;
+      border-radius: 12px;
+      background: #f9fbfe;
+    }
+    .sign-preview-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      color: #0b3b78;
+    }
+    .sign-preview img {
+      max-width: 100%;
+      max-height: 130px;
+      display: block;
+      background: #fff;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+    .btn-mini-clear {
+      background: #e2e8f0;
+      color: #1b2430;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
     }
     video {
       width: 100%;
@@ -121,6 +186,7 @@
     }
     .snap { background: #0078d4; }
     .save { background: #107c10; }
+    .clear { background: #5c6b7c; }
     .close { background: #d83b01; }
     .draft-photos {
       margin-top: 14px;
@@ -218,6 +284,25 @@
       font-size: 16px;
       color: #0b3b78;
     }
+    .item-sign {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed #cbd6e2;
+    }
+    .item-sign-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0b3b78;
+      margin-bottom: 6px;
+    }
+    .item-sign img {
+      max-width: 100%;
+      max-height: 140px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      display: block;
+    }
     .photos-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -282,389 +367,26 @@
       <button type="button" class="bigbtn" onclick="abrirFormulario()">📷 NUEVO REGISTRO</button>
 
       <div id="formularioRegistro" style="display:none;">
-        <label class="field-label" for="nombre">Proveedor/cliente</label>
-        <input
-          type="text"
-          id="nombre"
-          class="input-nombre"
-          placeholder="Escribe el proveedor o cliente..."
-          autocomplete="organization"
-        >
+        <div id="menuRegistro">
+          <label class="field-label" for="nombre">Proveedor/cliente</label>
+          <input
+            type="text"
+            id="nombre"
+            class="input-nombre"
+            placeholder="Escribe el proveedor o cliente..."
+            autocomplete="organization"
+          >
 
-        <button type="button" id="btnAbrirCamara" class="cam-trigger" onclick="iniciarCamara()">
-          📸 ABRIR CÁMARA
-        </button>
+          <button type="button" id="btnAbrirFirma" class="action-trigger sign-trigger" onclick="abrirFirma()">
+            ✍️ FIRMAR
+          </button>
 
-        <div id="camara" style="display:none;">
-          <video id="video" autoplay playsinline muted></video>
-          <button type="button" class="btn snap" onclick="sacarFoto()">📷 SACAR FOTO</button>
-          <button type="button" class="btn close" onclick="cerrarCamara()">❌ CERRAR CÁMARA</button>
-        </div>
-
-        <div id="seccionBorrador" class="draft-photos" style="display:none;">
-          <div id="tituloBorrador" class="draft-title">Fotos capturadas (0):</div>
-          <div id="miniaturasBorrador" class="thumbs"></div>
-          <button type="button" class="btn save" onclick="guardarRegistro()">✅ GUARDAR REGISTRO</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <button
-        type="button"
-        id="btnHistorial"
-        class="accordion-toggle"
-        onclick="toggleHistorial()"
-        aria-expanded="false"
-        aria-controls="historialPanel"
-      >
-        <span>
-          📋 Historial de registros
-          <span id="totalHistorial" class="accordion-badge">0</span>
-        </span>
-        <span id="flechaHistorial" class="accordion-arrow">▼</span>
-      </button>
-
-      <div id="historialPanel" class="accordion-content">
-        <div id="historial" class="grid"></div>
-      </div>
-    </div>
-  </div>
-
-  <canvas id="canvas" style="display:none;"></canvas>
-
-  <script>
-    const DB_NAME = 'TransporteInternoDB';
-    const DB_VERSION = 1;
-    const STORE_NAME = 'registros';
-    const LEGACY_STORAGE_KEY = 'registrosTransporte';
-
-    let db = null;
-    let stream = null;
-    let historialAbierto = false;
-    let fotosBorrador = [];
-    const video = document.getElementById('video');
-
-    function abrirBD() {
-      return new Promise((resolve, reject) => {
-        if (db) return resolve(db);
-        const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-        request.onupgradeneeded = (event) => {
-          const database = event.target.result;
-          if (!database.objectStoreNames.contains(STORE_NAME)) {
-            database.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
-          }
-        };
-
-        request.onsuccess = (event) => {
-          db = event.target.result;
-          resolve(db);
-        };
-
-        request.onerror = (event) => {
-          reject(event.target.error);
-        };
-      });
-    }
-
-    async function migrarDesdeLocalStorageSiExiste() {
-      try {
-        const raw = localStorage.getItem(LEGACY_STORAGE_KEY);
-        if (!raw) return;
-        const antiguos = JSON.parse(raw);
-        if (!Array.isArray(antiguos) || antiguos.length === 0) return;
-
-        const database = await abrirBD();
-        const tx = database.transaction(STORE_NAME, 'readwrite');
-        const store = tx.objectStore(STORE_NAME);
-
-        for (const item of antiguos) {
-          const fotos = Array.isArray(item.imagenes)
-            ? item.imagenes
-            : (item.imagen ? [item.imagen] : []);
-          store.add({
-            nombre: item.nombre || 'Sin especificar',
-            fecha: item.fecha || '',
-            hora: item.hora || '',
-            imagenes: fotos
-          });
-        }
-
-        await new Promise((resolve, reject) => {
-          tx.oncomplete = resolve;
-          tx.onerror = () => reject(tx.error);
-        });
-
-        localStorage.removeItem(LEGACY_STORAGE_KEY);
-      } catch (e) {
-        console.warn('No se pudo migrar datos antiguos:', e);
-      }
-    }
-
-    async function obtenerTodosLosRegistros() {
-      const database = await abrirBD();
-      return new Promise((resolve, reject) => {
-        const tx = database.transaction(STORE_NAME, 'readonly');
-        const store = tx.objectStore(STORE_NAME);
-        const request = store.getAll();
-        request.onsuccess = () => resolve(request.result || []);
-        request.onerror = () => reject(request.error);
-      });
-    }
-
-    async function insertarRegistro(registro) {
-      const database = await abrirBD();
-      return new Promise((resolve, reject) => {
-        const tx = database.transaction(STORE_NAME, 'readwrite');
-        const store = tx.objectStore(STORE_NAME);
-        const request = store.add(registro);
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-      });
-    }
-
-    async function eliminarRegistroPorId(id) {
-      const database = await abrirBD();
-      return new Promise((resolve, reject) => {
-        const tx = database.transaction(STORE_NAME, 'readwrite');
-        const store = tx.objectStore(STORE_NAME);
-        const request = store.delete(id);
-        request.onsuccess = () => resolve();
-        request.onerror = () => reject(request.error);
-      });
-    }
-
-    function abrirFormulario() {
-      cerrarCamara();
-      fotosBorrador = [];
-      renderBorrador();
-      document.getElementById('formularioRegistro').style.display = 'block';
-      document.getElementById('nombre').focus({ preventScroll: true });
-    }
-
-    function toggleHistorial() {
-      historialAbierto = !historialAbierto;
-      const panel = document.getElementById('historialPanel');
-      const flecha = document.getElementById('flechaHistorial');
-      const boton = document.getElementById('btnHistorial');
-
-      panel.classList.toggle('open', historialAbierto);
-      boton.setAttribute('aria-expanded', historialAbierto ? 'true' : 'false');
-      flecha.style.transform = historialAbierto ? 'rotate(180deg)' : 'rotate(0deg)';
-    }
-
-    async function iniciarCamara() {
-      try {
-        if (stream) {
-          stream.getTracks().forEach(t => t.stop());
-        }
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: { ideal: 'environment' },
-            width: { ideal: 1280 },
-            height: { ideal: 720 }
-          },
-          audio: false
-        });
-        video.srcObject = stream;
-        await video.play();
-        document.getElementById('camara').style.display = 'block';
-        document.getElementById('btnAbrirCamara').style.display = 'none';
-      } catch (e) {
-        alert('No se pudo abrir la cámara. Revisa los permisos del navegador.');
-      }
-    }
-
-    function cerrarCamara() {
-      if (stream) {
-        stream.getTracks().forEach(t => t.stop());
-        stream = null;
-      }
-      video.srcObject = null;
-      document.getElementById('camara').style.display = 'none';
-      document.getElementById('btnAbrirCamara').style.display = 'block';
-    }
-
-    function capturarImagen() {
-      if (!stream || video.readyState < 2 || !video.videoWidth || !video.videoHeight) {
-        return null;
-      }
-
-      const maxAncho = 1280;
-      let ancho = video.videoWidth;
-      let alto = video.videoHeight;
-
-      if (ancho > maxAncho) {
-        const escala = maxAncho / ancho;
-        ancho = maxAncho;
-        alto = Math.round(alto * escala);
-      }
-
-      const canvas = document.getElementById('canvas');
-      canvas.width = ancho;
-      canvas.height = alto;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(video, 0, 0, ancho, alto);
-
-      const muestra = ctx.getImageData(0, 0, Math.min(20, ancho), Math.min(20, alto)).data;
-      let sumaBrillo = 0;
-      for (let i = 0; i < muestra.length; i += 4) {
-        sumaBrillo += muestra[i] + muestra[i + 1] + muestra[i + 2];
-      }
-      if (sumaBrillo === 0) {
-        return null;
-      }
-
-      return canvas.toDataURL('image/jpeg', 0.72);
-    }
-
-    function sacarFoto() {
-      const img = capturarImagen();
-      if (!img) {
-        alert('La cámara aún no tiene imagen lista o ha salido en negro. Espera un segundo y vuelve a intentarlo.');
-        return;
-      }
-      fotosBorrador.push(img);
-      renderBorrador();
-    }
-
-    function quitarFotoBorrador(index) {
-      fotosBorrador.splice(index, 1);
-      renderBorrador();
-    }
-
-    function renderBorrador() {
-      const seccion = document.getElementById('seccionBorrador');
-      const titulo = document.getElementById('tituloBorrador');
-      const contenedor = document.getElementById('miniaturasBorrador');
-
-      if (fotosBorrador.length === 0) {
-        seccion.style.display = 'none';
-        contenedor.innerHTML = '';
-        return;
-      }
-
-      seccion.style.display = 'block';
-      titulo.textContent = `Fotos capturadas (${fotosBorrador.length}):`;
-      contenedor.innerHTML = '';
-
-      fotosBorrador.forEach((foto, idx) => {
-        contenedor.innerHTML += `
-          <div class="thumb-box">
-            <img src="${foto}" alt="Foto ${idx + 1}">
-            <button type="button" class="thumb-remove" onclick="quitarFotoBorrador(${idx})" title="Quitar foto">✕</button>
-          </div>
-        `;
-      });
-    }
-
-    async function guardarRegistro() {
-      const inputNombre = document.getElementById('nombre');
-      const nombre = inputNombre.value.trim();
-
-      if (!nombre) {
-        alert('Por favor, introduce el proveedor o cliente antes de guardar.');
-        inputNombre.focus();
-        return;
-      }
-
-      if (fotosBorrador.length === 0) {
-        alert('Haz al menos una foto antes de guardar el registro.');
-        return;
-      }
-
-      const ahora = new Date();
-      const registro = {
-        nombre: nombre,
-        fecha: ahora.toLocaleDateString('es-ES'),
-        hora: ahora.toLocaleTimeString('es-ES'),
-        imagenes: [...fotosBorrador]
-      };
-
-      try {
-        await insertarRegistro(registro);
-      } catch (e) {
-        alert('No se pudo guardar el registro en el almacenamiento del navegador.');
-        return;
-      }
-
-      inputNombre.value = '';
-      fotosBorrador = [];
-      renderBorrador();
-      cerrarCamara();
-      document.getElementById('formularioRegistro').style.display = 'none';
-      await cargar();
-      alert('Registro guardado correctamente.');
-    }
-
-    async function borrar(id) {
-      if (!confirm('¿Borrar este registro?')) return;
-      await eliminarRegistroPorId(id);
-      await cargar();
-    }
-
-    function escaparTexto(texto) {
-      const div = document.createElement('div');
-      div.textContent = texto;
-      return div.innerHTML;
-    }
-
-    async function cargar() {
-      const datos = await obtenerTodosLosRegistros();
-      const h = document.getElementById('historial');
-      h.innerHTML = '';
-
-      const hoy = new Date().toLocaleDateString('es-ES');
-      const registrosHoy = datos.filter(x => x.fecha === hoy).length;
-      document.getElementById('contador').innerText = 'Registros hoy: ' + registrosHoy;
-      document.getElementById('totalHistorial').innerText = datos.length;
-
-      if (datos.length === 0) {
-        h.innerHTML = '<div class="empty">Aún no hay registros guardados.</div>';
-        return;
-      }
-
-      datos.slice().reverse().forEach((r) => {
-        const nombreSeguro = escaparTexto(r.nombre || 'Sin especificar');
-        const nombreArchivo = (r.nombre || 'registro')
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/gi, '_')
-          .replace(/^_|_$/g, '') || 'registro';
-
-        const fotos = Array.isArray(r.imagenes)
-          ? r.imagenes
-          : (r.imagen ? [r.imagen] : []);
-
-        const fotosHtml = fotos.map((imgSrc, fIdx) => `
-          <div class="photo-card">
-            <img src="${imgSrc}" alt="Foto ${fIdx + 1} de ${nombreSeguro}">
-            <a class="download-sm" href="${imgSrc}" download="transporte_${nombreArchivo}_${r.id}_foto${fIdx + 1}.jpg">⬇ Foto ${fIdx + 1}</a>
-          </div>
-        `).join('');
-
-        h.innerHTML += `
-          <div class="item">
-            <div class="item-meta">
-              <b>📅 ${escaparTexto(r.fecha)}</b> &nbsp;|&nbsp; <b>🕒 ${escaparTexto(r.hora)}</b>
-              <div class="item-name">🏭 <b>${nombreSeguro}</b> · ${fotos.length} ${fotos.length === 1 ? 'foto' : 'fotos'}</div>
+          <div id="previewFirmaBorrador" class="sign-preview" style="display:none;">
+            <div class="sign-preview-top">
+              <span>✅ Firma guardada en este registro</span>
+              <button type="button" class="btn-mini-clear" onclick="quitarFirmaBorrador()">Quitar firma</button>
             </div>
-            <div class="photos-grid">
-              ${fotosHtml}
-            </div>
-            <div class="actions">
-              <button class="delete" onclick="borrar(${r.id})">🗑 Borrar registro</button>
-            </div>
+            <img id="imgFirmaBorrador" alt="Firma guardada">
           </div>
-        `;
-      });
-    }
 
-    (async function iniciarApp() {
-      await abrirBD();
-      await migrarDesdeLocalStorageSiExiste();
-      await cargar();
-    })();
-  </script>
-</body>
-</html>
+          <button type="button" id="btnAbrirCamara" class="action-trigger" onclick="
