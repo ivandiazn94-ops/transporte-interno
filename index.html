@@ -106,6 +106,43 @@
     }
     .save { background: #107c10; }
     .close { background: #d83b01; }
+    .accordion-toggle {
+      width: 100%;
+      background: #f4f7fb;
+      border: 2px solid #d5e0ec;
+      border-radius: 14px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 18px;
+      font-weight: 800;
+      color: #0b3b78;
+      cursor: pointer;
+    }
+    .accordion-toggle:hover {
+      background: #eaf1f8;
+    }
+    .accordion-badge {
+      background: #0b3b78;
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 13px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .accordion-arrow {
+      font-size: 16px;
+      transition: transform .2s ease;
+    }
+    .accordion-content {
+      display: none;
+      margin-top: 14px;
+    }
+    .accordion-content.open {
+      display: block;
+    }
     .grid {
       display: grid;
       gap: 14px;
@@ -172,13 +209,13 @@
       <button class="bigbtn" onclick="iniciarCamara()">📷 NUEVO REGISTRO</button>
 
       <div id="camara" style="display:none;">
-        <label class="field-label" for="nombre">Nombre de la persona</label>
+        <label class="field-label" for="nombre">Proveedor/cliente</label>
         <input
           type="text"
           id="nombre"
           class="input-nombre"
-          placeholder="Escribe el nombre..."
-          autocomplete="name"
+          placeholder="Escribe el proveedor o cliente..."
+          autocomplete="organization"
         >
 
         <video id="video" autoplay playsinline muted></video>
@@ -189,8 +226,24 @@
     </div>
 
     <div class="card">
-      <h2 style="margin-top:0;">Historial de registros</h2>
-      <div id="historial" class="grid"></div>
+      <button
+        type="button"
+        id="btnHistorial"
+        class="accordion-toggle"
+        onclick="toggleHistorial()"
+        aria-expanded="false"
+        aria-controls="historialPanel"
+      >
+        <span>
+          📋 Historial de registros
+          <span id="totalHistorial" class="accordion-badge">0</span>
+        </span>
+        <span id="flechaHistorial" class="accordion-arrow">▼</span>
+      </button>
+
+      <div id="historialPanel" class="accordion-content">
+        <div id="historial" class="grid"></div>
+      </div>
     </div>
   </div>
 
@@ -199,6 +252,7 @@
   <script>
     const STORAGE_KEY = 'registrosTransporte';
     let stream = null;
+    let historialAbierto = false;
     const video = document.getElementById('video');
 
     function obtenerDatos() {
@@ -211,6 +265,17 @@
 
     function guardarDatos(datos) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
+    }
+
+    function toggleHistorial() {
+      historialAbierto = !historialAbierto;
+      const panel = document.getElementById('historialPanel');
+      const flecha = document.getElementById('flechaHistorial');
+      const boton = document.getElementById('btnHistorial');
+
+      panel.classList.toggle('open', historialAbierto);
+      boton.setAttribute('aria-expanded', historialAbierto ? 'true' : 'false');
+      flecha.style.transform = historialAbierto ? 'rotate(180deg)' : 'rotate(0deg)';
     }
 
     async function iniciarCamara() {
@@ -265,7 +330,6 @@
       const ctx = canvas.getContext('2d');
       ctx.drawImage(video, 0, 0, ancho, alto);
 
-      // Comprobación rápida por si el fotograma está completamente negro
       const muestra = ctx.getImageData(0, 0, Math.min(20, ancho), Math.min(20, alto)).data;
       let sumaBrillo = 0;
       for (let i = 0; i < muestra.length; i += 4) {
@@ -283,7 +347,7 @@
       const nombre = inputNombre.value.trim();
 
       if (!nombre) {
-        alert('Por favor, introduce el nombre antes de guardar.');
+        alert('Por favor, introduce el proveedor o cliente antes de guardar.');
         inputNombre.focus();
         return;
       }
@@ -339,6 +403,7 @@
       const hoy = new Date().toLocaleDateString('es-ES');
       const registrosHoy = datos.filter(x => x.fecha === hoy).length;
       document.getElementById('contador').innerText = 'Registros hoy: ' + registrosHoy;
+      document.getElementById('totalHistorial').innerText = datos.length;
 
       if (datos.length === 0) {
         h.innerHTML = '<div class="empty">Aún no hay registros guardados.</div>';
@@ -347,7 +412,7 @@
 
       datos.slice().reverse().forEach((r, idx) => {
         const real = datos.length - 1 - idx;
-        const nombreSeguro = escaparTexto(r.nombre || 'Sin nombre');
+        const nombreSeguro = escaparTexto(r.nombre || 'Sin especificar');
         const nombreArchivo = (r.nombre || 'registro')
           .toLowerCase()
           .replace(/[^a-z0-9]+/gi, '_')
@@ -357,7 +422,7 @@
           <div class="item">
             <div class="item-meta">
               <b>📅 ${escaparTexto(r.fecha)}</b> &nbsp;|&nbsp; <b>🕒 ${escaparTexto(r.hora)}</b>
-              <div class="item-name">👤 <b>${nombreSeguro}</b></div>
+              <div class="item-name">🏭 <b>${nombreSeguro}</b></div>
             </div>
             <img src="${r.imagen}" alt="Foto de ${nombreSeguro}">
             <div class="actions">
