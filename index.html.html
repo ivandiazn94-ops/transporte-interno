@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRANSPORTE INTERNO SYNTEGON TELSTAR</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f7fb;margin:0;padding:20px}
+.container{max-width:800px;margin:auto}
+.header{background:#003b7a;color:#fff;padding:18px;border-radius:12px;text-align:center;font-size:24px;font-weight:bold}
+.card{background:#fff;margin-top:20px;padding:20px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.btn{width:100%;padding:18px;border:none;border-radius:10px;background:#0078d4;color:white;font-size:20px;font-weight:bold;cursor:pointer}
+.registro{border-bottom:1px solid #ddd;padding:12px 0}
+.registro img{max-width:180px;border-radius:8px;margin-top:8px}
+.status{padding:10px;background:#eef5ff;border-radius:8px;margin-top:15px}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">TRANSPORTE INTERNO SYNTEGON TELSTAR</div>
+
+<div class="card">
+<input type="file" id="camera" accept="image/*" capture="environment" hidden>
+<button class="btn" onclick="document.getElementById('camera').click()">📷 INICIAR CÁMARA</button>
+<div id="status"></div>
+</div>
+
+<div class="card">
+<h3>Histórico de registros</h3>
+<div id="registros"></div>
+</div>
+</div>
+
+<script>
+const SUPABASE_URL='PEGAR_SUPABASE_URL';
+const SUPABASE_ANON_KEY='PEGAR_SUPABASE_ANON_KEY';
+const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+
+async function cargarRegistros(){
+ const {data,error}=await supabase
+ .from('registros_transporte')
+ .select('*')
+ .order('fecha_hora',{ascending:false});
+
+ if(error) return;
+
+ const cont=document.getElementById('registros');
+ cont.innerHTML='';
+ data.forEach(r=>{
+ cont.innerHTML+=`<div class="registro"><b>${new Date(r.fecha_hora).toLocaleDateString('es-ES')}</b> - ${new Date(r.fecha_hora).toLocaleTimeString('es-ES')}<br><img src="${r.imagen_url}"></div>`;
+ });
+}
+
+async function subirImagen(file){
+ const nombre=Date.now()+'-'+file.name;
+
+ const {error}=await supabase.storage
+ .from('imagenes-transporte')
+ .upload(nombre,file);
+
+ if(error){alert(error.message);return;}
+
+ const {data:urlData}=supabase.storage
+ .from('imagenes-transporte')
+ .getPublicUrl(nombre);
+
+ await supabase
+ .from('registros_transporte')
+ .insert({
+ fecha_hora:new Date().toISOString(),
+ imagen_url:urlData.publicUrl
+ });
+
+ document.getElementById('status').innerHTML='<div class="status">✅ Registro guardado correctamente</div>';
+ cargarRegistros();
+}
+
+document.getElementById('camera').addEventListener('change',async(e)=>{
+ if(e.target.files.length===0)return;
+ await subirImagen(e.target.files[0]);
+});
+
+cargarRegistros();
+</script>
+</body>
+</html>
