@@ -234,7 +234,7 @@
         >
 
         <button type="button" id="btnAbrirCamara" class="cam-trigger" onclick="iniciarCamara()">
-          📸 ABRIR CÁMARA / HACER FOTO
+          📸 ABRIR CÁMARA
         </button>
 
         <div id="camara" style="display:none;">
@@ -288,6 +288,7 @@
     }
 
     function abrirFormulario() {
+      cerrarCamara();
       document.getElementById('formularioRegistro').style.display = 'block';
       document.getElementById('nombre').focus({ preventScroll: true });
     }
