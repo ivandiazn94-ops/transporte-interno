@@ -84,6 +84,21 @@
     .bigbtn:active {
       transform: scale(0.99);
     }
+    .cam-trigger {
+      width: 100%;
+      padding: 16px;
+      margin-top: 14px;
+      border: 2px solid #0078d4;
+      border-radius: 12px;
+      background: #eaf4fc;
+      color: #005a9e;
+      font-size: 17px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .cam-trigger:hover {
+      background: #d8ebfa;
+    }
     video {
       width: 100%;
       max-height: 460px;
@@ -206,9 +221,9 @@
     </div>
 
     <div class="card">
-      <button class="bigbtn" onclick="iniciarCamara()">📷 NUEVO REGISTRO</button>
+      <button type="button" class="bigbtn" onclick="abrirFormulario()">📷 NUEVO REGISTRO</button>
 
-      <div id="camara" style="display:none;">
+      <div id="formularioRegistro" style="display:none;">
         <label class="field-label" for="nombre">Proveedor/cliente</label>
         <input
           type="text"
@@ -218,10 +233,15 @@
           autocomplete="organization"
         >
 
-        <video id="video" autoplay playsinline muted></video>
+        <button type="button" id="btnAbrirCamara" class="cam-trigger" onclick="iniciarCamara()">
+          📸 ABRIR CÁMARA / HACER FOTO
+        </button>
 
-        <button class="btn save" onclick="guardarRegistro()">✅ GUARDAR REGISTRO</button>
-        <button class="btn close" onclick="cerrarCamara()">❌ CERRAR CÁMARA</button>
+        <div id="camara" style="display:none;">
+          <video id="video" autoplay playsinline muted></video>
+          <button type="button" class="btn save" onclick="guardarRegistro()">✅ HACER FOTO Y GUARDAR</button>
+          <button type="button" class="btn close" onclick="cerrarCamara()">❌ CERRAR CÁMARA</button>
+        </div>
       </div>
     </div>
 
@@ -267,6 +287,11 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
     }
 
+    function abrirFormulario() {
+      document.getElementById('formularioRegistro').style.display = 'block';
+      document.getElementById('nombre').focus({ preventScroll: true });
+    }
+
     function toggleHistorial() {
       historialAbierto = !historialAbierto;
       const panel = document.getElementById('historialPanel');
@@ -294,7 +319,7 @@
         video.srcObject = stream;
         await video.play();
         document.getElementById('camara').style.display = 'block';
-        document.getElementById('nombre').focus({ preventScroll: true });
+        document.getElementById('btnAbrirCamara').style.display = 'none';
       } catch (e) {
         alert('No se pudo abrir la cámara. Revisa los permisos del navegador.');
       }
@@ -307,6 +332,7 @@
       }
       video.srcObject = null;
       document.getElementById('camara').style.display = 'none';
+      document.getElementById('btnAbrirCamara').style.display = 'block';
     }
 
     function capturarImagen() {
@@ -377,6 +403,8 @@
       }
 
       inputNombre.value = '';
+      cerrarCamara();
+      document.getElementById('formularioRegistro').style.display = 'none';
       cargar();
       alert('Registro guardado correctamente.');
     }
