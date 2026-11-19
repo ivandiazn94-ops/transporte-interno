@@ -119,8 +119,49 @@
       font-weight: 700;
       cursor: pointer;
     }
+    .snap { background: #0078d4; }
     .save { background: #107c10; }
     .close { background: #d83b01; }
+    .draft-photos {
+      margin-top: 14px;
+    }
+    .draft-title {
+      font-weight: 700;
+      color: #0b3b78;
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+    .thumbs {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+    }
+    .thumb-box {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #d5e0ec;
+      background: #111;
+    }
+    .thumb-box img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      display: block;
+    }
+    .thumb-remove {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: rgba(197, 15, 31, 0.92);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 2px 7px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
     .accordion-toggle {
       width: 100%;
       background: #f4f7fb;
@@ -177,33 +218,50 @@
       font-size: 16px;
       color: #0b3b78;
     }
-    .item img {
+    .photos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .photo-card {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .photo-card img {
       width: 100%;
-      max-height: 420px;
+      max-height: 360px;
       object-fit: cover;
       border-radius: 12px;
-      margin-top: 10px;
       background: #111;
+    }
+    .download-sm {
+      text-align: center;
+      padding: 8px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #fff;
+      background: #0078d4;
+      font-weight: 700;
+      font-size: 13px;
     }
     .actions {
       display: flex;
       gap: 8px;
       margin-top: 12px;
     }
-    .actions button,
-    .actions a {
+    .actions button {
       flex: 1;
       text-align: center;
       padding: 12px;
       border: none;
       border-radius: 10px;
-      text-decoration: none;
       color: #fff;
       font-weight: 700;
       font-size: 14px;
       cursor: pointer;
     }
-    .download { background: #0078d4; }
     .delete { background: #c50f1f; }
     .empty {
       text-align: center;
@@ -239,8 +297,14 @@
 
         <div id="camara" style="display:none;">
           <video id="video" autoplay playsinline muted></video>
-          <button type="button" class="btn save" onclick="guardarRegistro()">✅ HACER FOTO Y GUARDAR</button>
+          <button type="button" class="btn snap" onclick="sacarFoto()">📷 SACAR FOTO</button>
           <button type="button" class="btn close" onclick="cerrarCamara()">❌ CERRAR CÁMARA</button>
+        </div>
+
+        <div id="seccionBorrador" class="draft-photos" style="display:none;">
+          <div id="tituloBorrador" class="draft-title">Fotos capturadas (0):</div>
+          <div id="miniaturasBorrador" class="thumbs"></div>
+          <button type="button" class="btn save" onclick="guardarRegistro()">✅ GUARDAR REGISTRO</button>
         </div>
       </div>
     </div>
@@ -270,25 +334,111 @@
   <canvas id="canvas" style="display:none;"></canvas>
 
   <script>
-    const STORAGE_KEY = 'registrosTransporte';
+    const DB_NAME = 'TransporteInternoDB';
+    const DB_VERSION = 1;
+    const STORE_NAME = 'registros';
+    const LEGACY_STORAGE_KEY = 'registrosTransporte';
+
+    let db = null;
     let stream = null;
     let historialAbierto = false;
+    let fotosBorrador = [];
     const video = document.getElementById('video');
 
-    function obtenerDatos() {
+    function abrirBD() {
+      return new Promise((resolve, reject) => {
+        if (db) return resolve(db);
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+        request.onupgradeneeded = (event) => {
+          const database = event.target.result;
+          if (!database.objectStoreNames.contains(STORE_NAME)) {
+            database.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+          }
+        };
+
+        request.onsuccess = (event) => {
+          db = event.target.result;
+          resolve(db);
+        };
+
+        request.onerror = (event) => {
+          reject(event.target.error);
+        };
+      });
+    }
+
+    async function migrarDesdeLocalStorageSiExiste() {
       try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        const raw = localStorage.getItem(LEGACY_STORAGE_KEY);
+        if (!raw) return;
+        const antiguos = JSON.parse(raw);
+        if (!Array.isArray(antiguos) || antiguos.length === 0) return;
+
+        const database = await abrirBD();
+        const tx = database.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+
+        for (const item of antiguos) {
+          const fotos = Array.isArray(item.imagenes)
+            ? item.imagenes
+            : (item.imagen ? [item.imagen] : []);
+          store.add({
+            nombre: item.nombre || 'Sin especificar',
+            fecha: item.fecha || '',
+            hora: item.hora || '',
+            imagenes: fotos
+          });
+        }
+
+        await new Promise((resolve, reject) => {
+          tx.oncomplete = resolve;
+          tx.onerror = () => reject(tx.error);
+        });
+
+        localStorage.removeItem(LEGACY_STORAGE_KEY);
       } catch (e) {
-        return [];
+        console.warn('No se pudo migrar datos antiguos:', e);
       }
     }
 
-    function guardarDatos(datos) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
+    async function obtenerTodosLosRegistros() {
+      const database = await abrirBD();
+      return new Promise((resolve, reject) => {
+        const tx = database.transaction(STORE_NAME, 'readonly');
+        const store = tx.objectStore(STORE_NAME);
+        const request = store.getAll();
+        request.onsuccess = () => resolve(request.result || []);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function insertarRegistro(registro) {
+      const database = await abrirBD();
+      return new Promise((resolve, reject) => {
+        const tx = database.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        const request = store.add(registro);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function eliminarRegistroPorId(id) {
+      const database = await abrirBD();
+      return new Promise((resolve, reject) => {
+        const tx = database.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        const request = store.delete(id);
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      });
     }
 
     function abrirFormulario() {
       cerrarCamara();
+      fotosBorrador = [];
+      renderBorrador();
       document.getElementById('formularioRegistro').style.display = 'block';
       document.getElementById('nombre').focus({ preventScroll: true });
     }
@@ -369,7 +519,47 @@
       return canvas.toDataURL('image/jpeg', 0.72);
     }
 
-    function guardarRegistro() {
+    function sacarFoto() {
+      const img = capturarImagen();
+      if (!img) {
+        alert('La cámara aún no tiene imagen lista o ha salido en negro. Espera un segundo y vuelve a intentarlo.');
+        return;
+      }
+      fotosBorrador.push(img);
+      renderBorrador();
+    }
+
+    function quitarFotoBorrador(index) {
+      fotosBorrador.splice(index, 1);
+      renderBorrador();
+    }
+
+    function renderBorrador() {
+      const seccion = document.getElementById('seccionBorrador');
+      const titulo = document.getElementById('tituloBorrador');
+      const contenedor = document.getElementById('miniaturasBorrador');
+
+      if (fotosBorrador.length === 0) {
+        seccion.style.display = 'none';
+        contenedor.innerHTML = '';
+        return;
+      }
+
+      seccion.style.display = 'block';
+      titulo.textContent = `Fotos capturadas (${fotosBorrador.length}):`;
+      contenedor.innerHTML = '';
+
+      fotosBorrador.forEach((foto, idx) => {
+        contenedor.innerHTML += `
+          <div class="thumb-box">
+            <img src="${foto}" alt="Foto ${idx + 1}">
+            <button type="button" class="thumb-remove" onclick="quitarFotoBorrador(${idx})" title="Quitar foto">✕</button>
+          </div>
+        `;
+      });
+    }
+
+    async function guardarRegistro() {
       const inputNombre = document.getElementById('nombre');
       const nombre = inputNombre.value.trim();
 
@@ -379,9 +569,8 @@
         return;
       }
 
-      const img = capturarImagen();
-      if (!img) {
-        alert('La cámara aún no tiene imagen lista o ha salido en negro. Espera un segundo y vuelve a intentarlo.');
+      if (fotosBorrador.length === 0) {
+        alert('Haz al menos una foto antes de guardar el registro.');
         return;
       }
 
@@ -390,32 +579,29 @@
         nombre: nombre,
         fecha: ahora.toLocaleDateString('es-ES'),
         hora: ahora.toLocaleTimeString('es-ES'),
-        imagen: img
+        imagenes: [...fotosBorrador]
       };
 
-      const datos = obtenerDatos();
-      datos.push(registro);
-
       try {
-        guardarDatos(datos);
+        await insertarRegistro(registro);
       } catch (e) {
-        alert('Se ha llenado el espacio disponible en el navegador. Borra algún registro antiguo del historial.');
+        alert('No se pudo guardar el registro en el almacenamiento del navegador.');
         return;
       }
 
       inputNombre.value = '';
+      fotosBorrador = [];
+      renderBorrador();
       cerrarCamara();
       document.getElementById('formularioRegistro').style.display = 'none';
-      cargar();
+      await cargar();
       alert('Registro guardado correctamente.');
     }
 
-    function borrar(indiceReal) {
+    async function borrar(id) {
       if (!confirm('¿Borrar este registro?')) return;
-      const datos = obtenerDatos();
-      datos.splice(indiceReal, 1);
-      guardarDatos(datos);
-      cargar();
+      await eliminarRegistroPorId(id);
+      await cargar();
     }
 
     function escaparTexto(texto) {
@@ -424,8 +610,8 @@
       return div.innerHTML;
     }
 
-    function cargar() {
-      const datos = obtenerDatos();
+    async function cargar() {
+      const datos = await obtenerTodosLosRegistros();
       const h = document.getElementById('historial');
       h.innerHTML = '';
 
@@ -439,31 +625,46 @@
         return;
       }
 
-      datos.slice().reverse().forEach((r, idx) => {
-        const real = datos.length - 1 - idx;
+      datos.slice().reverse().forEach((r) => {
         const nombreSeguro = escaparTexto(r.nombre || 'Sin especificar');
         const nombreArchivo = (r.nombre || 'registro')
           .toLowerCase()
           .replace(/[^a-z0-9]+/gi, '_')
-          .replace(/^_|_$/g, '');
+          .replace(/^_|_$/g, '') || 'registro';
+
+        const fotos = Array.isArray(r.imagenes)
+          ? r.imagenes
+          : (r.imagen ? [r.imagen] : []);
+
+        const fotosHtml = fotos.map((imgSrc, fIdx) => `
+          <div class="photo-card">
+            <img src="${imgSrc}" alt="Foto ${fIdx + 1} de ${nombreSeguro}">
+            <a class="download-sm" href="${imgSrc}" download="transporte_${nombreArchivo}_${r.id}_foto${fIdx + 1}.jpg">⬇ Foto ${fIdx + 1}</a>
+          </div>
+        `).join('');
 
         h.innerHTML += `
           <div class="item">
             <div class="item-meta">
               <b>📅 ${escaparTexto(r.fecha)}</b> &nbsp;|&nbsp; <b>🕒 ${escaparTexto(r.hora)}</b>
-              <div class="item-name">🏭 <b>${nombreSeguro}</b></div>
+              <div class="item-name">🏭 <b>${nombreSeguro}</b> · ${fotos.length} ${fotos.length === 1 ? 'foto' : 'fotos'}</div>
             </div>
-            <img src="${r.imagen}" alt="Foto de ${nombreSeguro}">
+            <div class="photos-grid">
+              ${fotosHtml}
+            </div>
             <div class="actions">
-              <a class="download" href="${r.imagen}" download="transporte_${nombreArchivo || real}_${real}.jpg">⬇ Descargar</a>
-              <button class="delete" onclick="borrar(${real})">🗑 Borrar</button>
+              <button class="delete" onclick="borrar(${r.id})">🗑 Borrar registro</button>
             </div>
           </div>
         `;
       });
     }
 
-    cargar();
+    (async function iniciarApp() {
+      await abrirBD();
+      await migrarDesdeLocalStorageSiExiste();
+      await cargar();
+    })();
   </script>
 </body>
 </html>
